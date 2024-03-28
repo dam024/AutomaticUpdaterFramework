@@ -7,7 +7,7 @@
 
 import Cocoa
 
-class UpdaterViewController: NSViewController {
+public class UpdaterViewController: NSViewController {
     
     ///Text indication for the user to let him know what the progression is
     @IBOutlet weak var progressReporter: NSTextField!

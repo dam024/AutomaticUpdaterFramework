@@ -14,9 +14,9 @@ import Foundation
     let url:String!
 }*/
 
-struct ProgramVersion: CustomStringConvertible, Codable {
+public struct ProgramVersion: CustomStringConvertible, Codable {
     
-    var description: String {
+    public var description: String {
 //        print(self.version, self.subVersion, self.correctionNumber)
         if correctionNumber == 0 {
             return "\(self.version!).\(self.subVersion!)"
@@ -24,9 +24,9 @@ struct ProgramVersion: CustomStringConvertible, Codable {
             return "\(self.version!).\(self.subVersion!).\(self.correctionNumber!)"
         }
     }
-    let version:Int!
-    let subVersion:Int!
-    let correctionNumber:Int!
+    public let version:Int!
+    public let subVersion:Int!
+    public let correctionNumber:Int!
     
     init(version:String) {
         let numbers = version.split(separator: ".")
@@ -48,13 +48,13 @@ struct ProgramVersion: CustomStringConvertible, Codable {
         
     }
     
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         
         self.init(version: try container.decode(String.self))
     }
     
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         
         try container.encode(self.description)
@@ -75,7 +75,7 @@ struct ProgramVersion: CustomStringConvertible, Codable {
         }
     }
     
-    static func > (left: ProgramVersion, right: ProgramVersion) -> Bool {
+    static public func > (left: ProgramVersion, right: ProgramVersion) -> Bool {
         if(left.version == right.version) {
             if(left.subVersion == right.subVersion) {
                 return left.correctionNumber > right.correctionNumber
@@ -87,7 +87,7 @@ struct ProgramVersion: CustomStringConvertible, Codable {
         }
     }
     
-    static func < (left: ProgramVersion, right: ProgramVersion) -> Bool {
+    static public func < (left: ProgramVersion, right: ProgramVersion) -> Bool {
         return right > left
     }
     

@@ -11,7 +11,7 @@ import AppleArchive
 import System
 import ZIPFoundation
 
-class Updater : Host {
+public class Updater : Host {
     
     public static var shared: Updater = {
         Updater()
@@ -204,11 +204,11 @@ class Updater : Host {
 
 extension Updater : URLSessionDownloadDelegate {
     #warning("Try to fix these methods which doesn't work... They are not called, causing the app to have no progress bar...")
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+    public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         print("Finish downloading")
         self.delegate?.finishDownload()
     }
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+    public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         self.delegate?.progress(session, downloadTask: downloadTask, didWriteData: bytesWritten, totalBytesWritten: totalBytesWritten, totalBytesExpectedToWrite: totalBytesExpectedToWrite)
     }
     
@@ -231,7 +231,7 @@ extension URL {
     }
 }
 
-protocol UpdaterDelegate {
+public protocol UpdaterDelegate {
     func progress(_ sesson: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64)
     
     func finishDownload()
