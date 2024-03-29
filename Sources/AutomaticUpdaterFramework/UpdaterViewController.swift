@@ -15,12 +15,12 @@ public class UpdaterViewController: NSViewController {
     
     @IBOutlet weak var progressIndicator: NSProgressIndicator!
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         Updater.shared.delegate = self
     }
     
-    override func viewWillAppear() {
+    public override func viewWillAppear() {
         super.viewWillAppear()
         
         self.view.window?.styleMask.remove(.resizable)//Remove the resizable property of the window
@@ -40,14 +40,14 @@ public class UpdaterViewController: NSViewController {
 }
 
 extension UpdaterViewController : UpdaterDelegate {
-    func error(message: String) {
+    public func error(message: String) {
         DispatchQueue.main.async {
             self.progressReporter.stringValue = message
             self.progressReporter.textColor = .red
         }
     }
     
-    func progress(_ sesson: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+    public func progress(_ sesson: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         let conversionFactor:Int64 = 1024
         print(bytesWritten)
         
@@ -57,11 +57,11 @@ extension UpdaterViewController : UpdaterDelegate {
         }
     }
     
-    func finishDownload() {
+    public func finishDownload() {
         print("Download done...")
     }
     
-    func message(message: String, percentage: Double) {
+    public func message(message: String, percentage: Double) {
         DispatchQueue.main.async {
             self.progressReporter.stringValue = message
             self.progressIndicator.doubleValue = percentage
