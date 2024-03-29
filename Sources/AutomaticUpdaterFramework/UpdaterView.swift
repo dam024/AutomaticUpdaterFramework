@@ -6,9 +6,8 @@
 //
 
 import Cocoa
-import AutomaticUpdaterFramework
 
-class UpdaterView : NSView {
+public class UpdaterView : NSView {
     
     ///Text indication for the user to let him know what the progression is
     var progressReporter:NSTextField
@@ -19,7 +18,7 @@ class UpdaterView : NSView {
     ///The cancel button
     var cancelButton: NSButton!
     
-    override init(frame: NSRect) {
+    override public init(frame: NSRect) {
 //        Initialize the view
         self.progressReporter = NSTextField(wrappingLabelWithString: "Installing update")//NSTextField(string: "Installing update")
         self.progressIndicator = NSProgressIndicator()
@@ -44,11 +43,6 @@ class UpdaterView : NSView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func draw(_ dirtyRect: NSRect) {
-        super.draw(dirtyRect)
-//        print("Drawing the view")
     }
     
     private func configViews() {

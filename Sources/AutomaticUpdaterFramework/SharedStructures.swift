@@ -105,28 +105,83 @@ struct VersionDescription: Codable {
 public class Host : NSObject {
 //    let link:String = "http://localhost:8888/YoutubePlayer/update.php"
 //    let link:String = "https://damienjaccoud.com/YoutubePlayer/update.php"
-    var link:String {
-        get {
-            return "http://localhost:8888/AppUpdater/update.php"
+    static public var configFile:URL?
+    
+    ///The link to the updater 
+    public let link:String = {
+        if let val = Host.getConfigKey(key: "HostLink") {
+            return val
+        } else {
+//            Please, set the key `HostLink` in your config file, as it could not be found in the info.plist file
+            fatalError("You must set the key `HostLink` in the config file")
         }
-    }
+    }()
     
     ///Get the current version
     static var currentVersion:ProgramVersion = {
-        let infoVersion = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String
+        let infoVersion:String
+        if let val = Host.getConfigKey(key: "Version") {
+            infoVersion = val
+        } else if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+            infoVersion = appVersion
+        } else {
+    //            Please, set the key `Version` in your config file, as it could not be found in the info.plist file
+            fatalError("You must set the key `Version` in the config file")
+        }
         return ProgramVersion(version: infoVersion)
     }()
     
     ///The bundle identifier of the application. This corresponds to the app identifier that is used on the server
     static public var bundleIdentifer: String = {
-        #warning("Treat the case where we do not have an application and so no bundle identifier")
-        return Bundle.main.infoDictionary!["CFBundleIdentifier"] as! String
+        if let val = Host.getConfigKey(key: "Identifier") {
+            return val
+        } else if let appIdentifier  = Bundle.main.infoDictionary?["CFBundleIdentifier"] as? String {
+            return appIdentifier
+        } else {
+//            Please, set the key `Identifier` in your config file, as it could not be found in the info.plist file
+            fatalError("You must set the key `Identifier` in the config file")
+        }
     }()
     
     ///The key for the environment variable containing the url
-    static let urlEnvironmentKey:String = "url"
+    static public let urlEnvironmentKey:String = "url"
     
-    static public let mainAppName: String = "Coproman"
-    static public let updaterName: String = "Coproman Updater"
+    static public let mainAppName: String = {
+        if let val = Host.getConfigKey(key: "mainAppName") {
+            return val
+        } else if let appName  = Bundle.main.infoDictionary?["CFBundleExecutable"] as? String {
+            return appName
+        } else {
+//            Please, set the key `mainAppName` in your config file, as it could not be found in the info.plist file
+            fatalError("You must set the key `mainAppName` in the config file")
+        }
+    }()
+    static public let updaterName: String = {
+        if let val = Host.getConfigKey(key: "updaterName") {
+            return val
+        } else {
+//            Please, set the key `updaterName` in your config file, as it could not be found in the info.plist file
+            fatalError("You must set the key `updaterName` in the config file")
+        }
+    }()
+    
+    class func getConfigKey(key:String) -> String? {
+        if let url = self.configFile {
+            let data = try! Data(contentsOf: url)
+            
+            do {
+                let result = try PropertyListSerialization.propertyList(from: data, format: nil) as! [String:String]
+                return result[key]
+            } catch let e as NSError {
+//                The config file must use a valid Property List file format. Create a file with extension .plist
+                fatalError("Incorrect config file format: \(e.localizedDescription). Please, use a property list file (.plist)")
+            }
+            
+        } else {
+//            Have a look at the documentation. You need to provide the URL to a config file
+            fatalError("No URL found for config file. Please, set the static variable `Host.configFile` in time to prevent this error")
+        }
+        return nil
+    }
 }
 

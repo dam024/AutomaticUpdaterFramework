@@ -12,10 +12,12 @@ let package = Package(
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "AutomaticUpdaterFramework",
-            targets: ["AutomaticUpdaterFramework"]),
+            targets: ["AutomaticUpdaterFramework"]
+        ),
         .executable(
             name: "Updater",
-            targets: ["Updater"])
+            targets: ["Updater"]
+        )
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -32,6 +34,10 @@ let package = Package(
             dependencies: ["AutomaticUpdaterFramework"]),
         .executableTarget(
             name: "Updater",
-            dependencies: ["AutomaticUpdaterFramework","ZIPFoundation"])
+            dependencies: ["AutomaticUpdaterFramework"],
+            resources: [
+                .copy("UpdaterConfig.plist")
+            ]
+        )
     ]
 )
