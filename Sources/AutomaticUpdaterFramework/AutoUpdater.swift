@@ -66,7 +66,7 @@ public class AutoUpdater : Host {
             let (data, _ ) = try await URLSession.shared.data(for: requete)
             do {
                 let response = try JSONDecoder().decode(UpdateResult.self, from: data)
-                //                        print(response)
+                                        print(response)
                 if response.error == nil {
                     if response.recommanded != nil {
                         self.launchUpdateProcess(for: response.recommanded!)
