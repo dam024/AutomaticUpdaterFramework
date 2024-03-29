@@ -139,7 +139,7 @@ public class AutoUpdater : Host {
      */
     func installUpdate() {
         print("Installing update")
-        guard let url:URL = Bundle.main.url(forResource: Host.updaterName, withExtension: nil) else {
+        guard let url:URL = Bundle.main.url(forResource: Host.updaterName, withExtension: "app") else {
             print("Impossible to find url of updater")
             return
         }
