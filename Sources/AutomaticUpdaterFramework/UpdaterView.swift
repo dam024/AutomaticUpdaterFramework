@@ -104,6 +104,7 @@ extension UpdaterView: UpdaterDelegate {
     
     public func message(message: String, percentage: Double) {
         DispatchQueue.main.async {
+            print(message, percentage)
             self.progressReporter.stringValue = message
             self.progressIndicator.doubleValue = percentage
         }
