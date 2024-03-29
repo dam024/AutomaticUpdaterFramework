@@ -230,10 +230,10 @@ extension AutoUpdater : ObservableObject {
  */
 public struct UpdaterAlert : ViewModifier {
     
-    let autoUpdater: AutoUpdater
+    let autoUpdater: AutoUpdater = AutoUpdater.shared
     
     ///Indicate whether the view is presented or not
-    @Binding var isUpdateAvailable: Bool
+    @State var isUpdateAvailable: Bool = false
     
     public func body(content: Content) -> some View {
         content
@@ -263,8 +263,8 @@ extension View {
      
      Each view having this modifier will check independantly for an update. It is recommanded to place it at the root of a view hierarchy. See the description in ``AutoUpdater`` for examples.
      */
-    public func updaterAlert(autoUpdater: AutoUpdater, isUpdateAvailable: Binding<Bool>) -> some View {
-        modifier(UpdaterAlert(autoUpdater: autoUpdater, isUpdateAvailable: isUpdateAvailable))
+    public func updaterAlert(/*autoUpdater: AutoUpdater, isUpdateAvailable: Binding<Bool>*/) -> some View {
+        modifier(UpdaterAlert(/*autoUpdater: autoUpdater, isUpdateAvailable: isUpdateAvailable*/))
     }
 }
 #endif
