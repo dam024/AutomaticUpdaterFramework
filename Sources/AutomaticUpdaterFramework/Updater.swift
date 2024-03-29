@@ -49,7 +49,7 @@ public class Updater : Host {
     }
     
     private func askForUpdate() async {
-        print(ProcessInfo.processInfo.environment, ProcessInfo.processInfo.arguments)
+//        print(ProcessInfo.processInfo.environment, ProcessInfo.processInfo.arguments)
 //        Get the environment variables
         if let path = ProcessInfo.processInfo.environment[Host.urlEnvironmentKey], let url = URL(string: path) {
             await self.download(url: url)
@@ -83,8 +83,9 @@ public class Updater : Host {
             let (data, _) = try await URLSession.shared.data(for:URLRequest(url: url,cachePolicy: .reloadIgnoringLocalAndRemoteCacheData), delegate: self)
             
             // Prepare all URLs
-            var zipFile = URL(fileURLWithPath: NSTemporaryDirectory())//try fileManager.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-//            zipFile.appendPathComponent(Host.bundleIdentifer)
+            var zipFile = URL(fileURLWithPath: NSTemporaryDirectory())
+            var zipFile = try fileManager.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+            zipFile.appendPathComponent(Host.bundleIdentifer)
             var unzipDirectory = zipFile
             zipFile.appendPathComponent("YoutubePlayer.zip")
             unzipDirectory.appendPathComponent("YoutubePlayer")
