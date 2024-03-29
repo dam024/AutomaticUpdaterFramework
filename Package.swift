@@ -32,6 +32,6 @@ let package = Package(
             dependencies: ["AutomaticUpdaterFramework"]),
         .executableTarget(
             name: "Updater",
-            dependencies: ["AutomaticUpdaterFramework"])
+            dependencies: ["AutomaticUpdaterFramework","ZIPFoundation"])
     ]
 )
