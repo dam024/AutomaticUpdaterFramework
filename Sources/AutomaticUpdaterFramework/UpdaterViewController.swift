@@ -17,6 +17,7 @@ public class UpdaterViewController: NSViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        print("View loaded")
         Updater.shared.delegate = self
     }
     

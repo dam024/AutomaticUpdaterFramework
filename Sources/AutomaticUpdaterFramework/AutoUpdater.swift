@@ -13,18 +13,7 @@ import SwiftUI
 import AppKit
 
 public class AutoUpdater : Host {
-    
-    ///Get the current version
-    static var currentVersion:ProgramVersion = {
-        let infoVersion = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String
-        return ProgramVersion(version: infoVersion)
-    }()
-    
-    ///The bundle identifier of the application. This corresponds to the app identifier that is used on the server
-    static public var bundleIdentifer: String = {
-        #warning("Treat the case where we do not have an application and so no bundle identifier")
-        return Bundle.main.infoDictionary!["CFBundleIdentifier"] as! String
-    }()
+
     
     ///Shared instance of the updater
     static public var shared: AutoUpdater = {
@@ -63,7 +52,7 @@ public class AutoUpdater : Host {
      */
     private func askHostForAnUpdate() async {
         print("récupération des versions")
-        let post = "isUpdate=true&app=\(AutoUpdater.bundleIdentifer)&currentVersion=\(AutoUpdater.currentVersion)&getLatest=true"
+        let post = "isUpdate=true&app=\(Host.bundleIdentifer)&currentVersion=\(Host.currentVersion)&getLatest=true"
         guard let url = URL(string: self.link) else {
             print("Invalid url")
             return
@@ -150,7 +139,7 @@ public class AutoUpdater : Host {
      */
     func installUpdate() {
         print("Installing update")
-        guard let url:URL = Bundle.main.url(forResource: self.updaterName, withExtension: ".app") else {
+        guard let url:URL = Bundle.main.url(forResource: Host.updaterName, withExtension: ".app") else {
             print("Impossible to find url of updater")
             return
         }

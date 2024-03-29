@@ -13,9 +13,9 @@ let package = Package(
         .library(
             name: "AutomaticUpdaterFramework",
             targets: ["AutomaticUpdaterFramework"]),
-        /*.executable(
+        .executable(
             name: "Updater",
-            targets: ["Updater"])*/
+            targets: ["Updater"])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -26,15 +26,12 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "AutomaticUpdaterFramework",
-            dependencies: ["ZIPFoundation"],
-            resources: [
-                .process("Resources/Main.storyboard")
-            ]),
+            dependencies: ["ZIPFoundation"]),
         .testTarget(
             name: "AutomaticUpdaterFrameworkTests",
             dependencies: ["AutomaticUpdaterFramework"]),
-        /*.executableTarget(
+        .executableTarget(
             name: "Updater",
-            dependencies: ["AutomaticUpdaterFramework"])*/
+            dependencies: ["AutomaticUpdaterFramework"])
     ]
 )

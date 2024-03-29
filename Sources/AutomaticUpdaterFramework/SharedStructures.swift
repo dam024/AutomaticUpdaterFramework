@@ -7,13 +7,6 @@
 
 import Foundation
 
-
-/*struct AutoUpaterResult : Codable {
-    let error:String!
-    let version:String!
-    let url:String!
-}*/
-
 public struct ProgramVersion: CustomStringConvertible, Codable {
     
     public var description: String {
@@ -118,10 +111,22 @@ public class Host : NSObject {
         }
     }
     
+    ///Get the current version
+    static var currentVersion:ProgramVersion = {
+        let infoVersion = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String
+        return ProgramVersion(version: infoVersion)
+    }()
+    
+    ///The bundle identifier of the application. This corresponds to the app identifier that is used on the server
+    static public var bundleIdentifer: String = {
+        #warning("Treat the case where we do not have an application and so no bundle identifier")
+        return Bundle.main.infoDictionary!["CFBundleIdentifier"] as! String
+    }()
+    
     ///The key for the environment variable containing the url
     static let urlEnvironmentKey:String = "url"
     
-    let mainAppName: String = "Coproman"
-    let updaterName: String = "Coproman Updater"
+    static public let mainAppName: String = "Coproman"
+    static public let updaterName: String = "Coproman Updater"
 }
 

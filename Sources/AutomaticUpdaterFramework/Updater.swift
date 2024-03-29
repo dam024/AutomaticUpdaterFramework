@@ -7,8 +7,6 @@
 
 import Foundation
 import AppKit
-import AppleArchive
-import System
 import ZIPFoundation
 
 public class Updater : Host {
@@ -73,8 +71,8 @@ public class Updater : Host {
             let (data, _) = try await URLSession.shared.data(for:URLRequest(url: url,cachePolicy: .reloadIgnoringLocalAndRemoteCacheData), delegate: self)
             
             // Prepare all URLs
-            var zipFile = try fileManager.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-            zipFile.appendPathComponent(Bundle.main.bundleIdentifier!)
+            var zipFile = URL(fileURLWithPath: NSTemporaryDirectory())//try fileManager.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+//            zipFile.appendPathComponent(Host.bundleIdentifer)
             var unzipDirectory = zipFile
             zipFile.appendPathComponent("YoutubePlayer.zip")
             unzipDirectory.appendPathComponent("YoutubePlayer")
