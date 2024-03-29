@@ -49,8 +49,11 @@ public class Updater : Host {
     }
     
     private func askForUpdate() async {
+        print(ProcessInfo.processInfo.environment, ProcessInfo.processInfo.arguments)
 //        Get the environment variables
         if let path = ProcessInfo.processInfo.environment[Host.urlEnvironmentKey], let url = URL(string: path) {
+            await self.download(url: url)
+        } else if ProcessInfo.processInfo.arguments.count > 1, let url = URL(string: ProcessInfo.processInfo.arguments[1]) {
             await self.download(url: url)
         } else {
             self.delegate?.error(message: "Impossible to find URL for update")
