@@ -9,6 +9,15 @@ import Foundation
 import AppKit
 import ZIPFoundation
 
+/**
+ Installation:
+ 1. Add in the bundle target of the main app
+ 2. Add the updater app in the target dependencies of the main app
+ 2. Remove the sandbox capabilities of the updater app
+ 3. Add the "App Transport Security" key in the Info.plist file of both the main and updater app
+ 4. Add network capabilities in the Sandbox capabilities of the main app
+ */
+
 public class Updater : Host {
     
     public static var shared: Updater = {
@@ -170,7 +179,7 @@ public class Updater : Host {
                 if fileManager.fileExists(atPath: destURL.path) {
                     try fileManager.removeItem(at: destURL)
                 }
-
+                print("Test before delete",unzipApplication,destURL)
                 try fileManager.moveItem(at: unzipApplication, to: destURL)
             } catch let e as NSError {
                 self.delegate?.error(message: "Error when updating : \(e.localizedDescription)")

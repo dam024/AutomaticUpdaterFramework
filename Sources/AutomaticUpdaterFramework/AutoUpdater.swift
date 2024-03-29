@@ -257,14 +257,13 @@ public struct UpdaterAlert : ViewModifier {
 }
 
 extension View {
-    #warning("Can even go further in how much this modifier is autonomous: The binding  can  be handled internally and become a @State, the autoUpdater is simply the AutoUpdater.shared variable...")
     /**
      Add the capabilities to check for updates to your view
      
      Each view having this modifier will check independantly for an update. It is recommanded to place it at the root of a view hierarchy. See the description in ``AutoUpdater`` for examples.
      */
-    public func updaterAlert(/*autoUpdater: AutoUpdater, isUpdateAvailable: Binding<Bool>*/) -> some View {
-        modifier(UpdaterAlert(/*autoUpdater: autoUpdater, isUpdateAvailable: isUpdateAvailable*/))
+    public func updaterAlert() -> some View {
+        modifier(UpdaterAlert())
     }
 }
 #endif
