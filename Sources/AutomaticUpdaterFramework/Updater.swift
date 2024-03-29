@@ -18,7 +18,7 @@ public class Updater : Host {
     }()
     
     ///The delegate
-    var delegate:UpdaterDelegate?
+    public var delegate:UpdaterDelegate?
     
     ///The installation task which runs in background
     private var installationTask: Task<(), Never>? = nil
