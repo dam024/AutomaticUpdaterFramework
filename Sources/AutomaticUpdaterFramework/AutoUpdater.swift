@@ -33,6 +33,11 @@ public class AutoUpdater : Host {
     ///The description of the new version
     fileprivate var newVersion: VersionDescription?
     
+    ///Indicate if we need to show a feedback in case an error occur during the update check or if no update is available
+    fileprivate var provideFeedback:Bool = false
+    
+    ///Error to present in case no update is available and we want a feedback
+    fileprivate var feedbackString: String = ""
     #else
     
     #endif
@@ -41,8 +46,13 @@ public class AutoUpdater : Host {
      Check if a new update is available
      
      If a new update is available, informs the user automatically
+     
+     - parameter provideFeedback: Indicate if we need to show an alert in case no update is available or if we cannot check for updates
      */
-    public func checkForUpdate() {
+    public func checkForUpdate(_ provideFeedback: Bool = false) {
+        self.provideFeedback = provideFeedback
+        self.feedbackString = ""
+        self.newVersion = nil
         Task {
             await self.askHostForAnUpdate()
         }
@@ -66,20 +76,28 @@ public class AutoUpdater : Host {
             let (data, _ ) = try await URLSession.shared.data(for: requete)
             do {
                 let response = try JSONDecoder().decode(UpdateResult.self, from: data)
-                                        print(response)
+//                                        print(response)
                 if response.error == nil {
                     if response.recommanded != nil {
                         self.launchUpdateProcess(for: response.recommanded!)
+                    } else {
+                        self.feedbackString = "You are using the latest version of \(Host.mainAppName) :)"
+                        if self.provideFeedback {
+                            self.launchUpdateProcess(for: nil)
+                        }
                     }
                 } else {
                     print("Error on server side : \(String(describing: response.error))")
+                    self.feedbackString = response.error!.message
                 }
             } catch let e as NSError {
                 print("Impossible to decode the data: \(e)")
+                self.feedbackString = e.localizedDescription
                 print("Decoded data: \(String(describing: try? JSONSerialization.jsonObject(with: data) as? [String:Any]))")
             }
         } catch let e as NSError {
             print("Error to retrieve data : \(e)")
+            self.feedbackString = e.localizedDescription
         }
     }
     
@@ -96,7 +114,7 @@ public class AutoUpdater : Host {
     /**
      Display the alert informing that a new version is available
      */
-    private func launchUpdateProcess(for version:VersionDescription) {
+    private func launchUpdateProcess(for version:VersionDescription?) {
         #if canImport(SwiftUI)
 //        Set the new version and indicate that the object changed. This will notify the UpdaterAlert ViewModifier that it needs to check if a new update is available
         DispatchQueue.main.async {
@@ -104,6 +122,7 @@ public class AutoUpdater : Host {
             self.objectWillChange.send()
         }
         #elseif targetEnvironment(macCatalyst)
+        #warning("Implement for the case we want a feedback")
         if let viewController = self.rootViewController {
             DispatchQueue.main.async {
                 let alert = CustomAlert()
@@ -235,10 +254,18 @@ public struct UpdaterAlert : ViewModifier {
     ///Indicate whether the view is presented or not
     @State var isUpdateAvailable: Bool = false
     
+    ///Indicate we need to present the second alert, giving other informations
+    @State var showSecondAlert: Bool = false
+    
     public func body(content: Content) -> some View {
         content
             .onReceive(self.autoUpdater.objectWillChange, perform: { output in
-                self.isUpdateAvailable = self.autoUpdater.shouldUpdate()
+                let shouldUpdate = self.autoUpdater.shouldUpdate()
+                self.isUpdateAvailable = shouldUpdate
+//                Show the second alert if there is no available update or there was an issue
+                if !shouldUpdate && self.autoUpdater.feedbackString != "" {
+                    self.showSecondAlert = true
+                }
             })
             .alert("A new update is available. Do you want to install it?", isPresented: self.$isUpdateAvailable, actions: {
                 Button("Yes", role: .none, action: {
@@ -249,6 +276,11 @@ public struct UpdaterAlert : ViewModifier {
                 })
             }, message: {
                 Text("You are using version \(String(describing: AutoUpdater.currentVersion)). Version \(String(describing: self.autoUpdater.newVersion?.version ?? AutoUpdater.currentVersion)) is now available")
+            })
+            .alert(self.autoUpdater.feedbackString, isPresented: self.$showSecondAlert, actions: {
+                Button("Ok") {
+//                    simply close the alert...
+                }
             })
             .onAppear() {
                 self.autoUpdater.checkForUpdate()
