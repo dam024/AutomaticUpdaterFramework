@@ -108,7 +108,7 @@ public class Host : NSObject {
     static public var configFile:URL?
     
     ///The link to the updater 
-    public let link:String = {
+    public static let link:String = {
         if let val = Host.getConfigKey(key: "HostLink") {
             return val
         } else {
@@ -118,7 +118,7 @@ public class Host : NSObject {
     }()
     
     ///Get the current version
-    static var currentVersion:ProgramVersion = {
+    static let currentVersion:ProgramVersion = {
         let infoVersion:String
         if let val = Host.getConfigKey(key: "Version") {
             infoVersion = val
@@ -132,7 +132,7 @@ public class Host : NSObject {
     }()
     
     ///The bundle identifier of the application. This corresponds to the app identifier that is used on the server
-    static public var bundleIdentifer: String = {
+    static public let bundleIdentifer: String = {
         if let val = Host.getConfigKey(key: "Identifier") {
             return val
         } else if let appIdentifier  = Bundle.main.infoDictionary?["CFBundleIdentifier"] as? String {
@@ -178,7 +178,7 @@ public class Host : NSObject {
             }
             
         } else {
-//            Have a look at the documentation. You need to provide the URL to a config file
+//            Have a look at the documentation. You need to provide the URL to a config file.
             fatalError("No URL found for config file. Please, set the static variable `Host.configFile` in time to prevent this error")
         }
         return nil

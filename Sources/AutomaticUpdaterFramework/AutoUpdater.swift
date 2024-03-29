@@ -53,7 +53,7 @@ public class AutoUpdater : Host {
     private func askHostForAnUpdate() async {
         print("récupération des versions")
         let post = "isUpdate=true&app=\(Host.bundleIdentifer)&currentVersion=\(Host.currentVersion)&getLatest=true"
-        guard let url = URL(string: self.link) else {
+        guard let url = URL(string: Host.link) else {
             print("Invalid url")
             return
         }
