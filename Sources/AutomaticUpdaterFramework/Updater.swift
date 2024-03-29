@@ -129,7 +129,7 @@ public class Updater : Host {
         } catch let e as NSError {
             print("Error \(e)")
             self.delegate?.error(message: "\(e.localizedDescription). Update cancelled.")
-            self.clean()
+//            self.clean()
         }
     }
     
