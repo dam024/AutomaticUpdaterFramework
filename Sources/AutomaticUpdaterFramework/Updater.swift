@@ -108,9 +108,9 @@ public class Updater : Host {
 //                Move new version to its destination directory. The destination directory is the application folder
             let destURL = try self.moveNewVersion(unzipDirectory: unzipDirectory)
 //            If the old version hasn't been deleted, appends it to the files to be cleaned
-            if fileManager.fileExists(atPath: oldVersion.path) {
+            /*if fileManager.fileExists(atPath: oldVersion.path) {
                 self.itemsToClean.append(oldVersion.path)
-            }
+            }*/
             
             self.delegate?.message(message: "Cleaning everything ...",percentage: 5.0/6.0)
 //                Delete all files which were required for the update
@@ -130,7 +130,7 @@ public class Updater : Host {
         } catch let e as NSError {
             print("Error \(e)")
             self.delegate?.error(message: "\(e.localizedDescription). Update cancelled.")
-//            self.clean()
+            self.clean()
         }
     }
     
