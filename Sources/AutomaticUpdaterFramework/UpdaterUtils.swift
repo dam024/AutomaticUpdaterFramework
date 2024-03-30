@@ -9,6 +9,9 @@ import Cocoa
 
 public class AUStandaloneWindow: NSWindow {
     
+    ///Indicate if the window was initialized
+    public var isInitialized:Bool = false
+    
     public init(frame: NSRect, styleMask: NSWindow.StyleMask) {
         super.init(contentRect: frame, styleMask: styleMask, backing: .buffered, defer: false)
     }
