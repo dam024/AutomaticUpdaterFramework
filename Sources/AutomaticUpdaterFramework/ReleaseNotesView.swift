@@ -10,7 +10,7 @@ import Cocoa
 public class AUReleaseNotesManager {
     private let lastOpenedAppVersionKey: String = "AUReleaseNotes_lastOpenedAppVersionKey"
     
-    static let shared: AUReleaseNotesManager = {
+    static public let shared: AUReleaseNotesManager = {
         return AUReleaseNotesManager()
     }()
     
