@@ -11,9 +11,6 @@ public class AUStandaloneWindow: NSWindow {
     
     public init(frame: NSRect, styleMask: NSWindow.StyleMask) {
         super.init(contentRect: frame, styleMask: styleMask, backing: .buffered, defer: false)
-        
-        self.center()
-        self.makeKeyAndOrderFront(self)
     }
     
     public func addMainView(_ view: NSView) {
@@ -29,6 +26,11 @@ public class AUStandaloneWindow: NSWindow {
             view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
             view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
         }
+    }
+    
+    public func present() {
+        self.center()
+        self.makeKeyAndOrderFront(self)
     }
 }
 
@@ -59,6 +61,7 @@ public class UpdaterWindow: AUStandaloneWindow {
     public func create() {
         let updaterView = UpdaterView(frame: self.frame)
         self.addMainView(updaterView)
+        self.present()
         
         //        Launch the update
         DispatchQueue.main.async {
@@ -95,6 +98,7 @@ public class AUReleaseNotesWindow: AUStandaloneWindow {
     public func create() {
         let view = AUReleaseNotesView(frame: self.frame, releasNotesURL: self.releaseNotesURL)
         self.addMainView(view)
+        self.present()
     }
 }
 
