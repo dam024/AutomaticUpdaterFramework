@@ -13,11 +13,11 @@ let package = Package(
         .library(
             name: "AutomaticUpdaterFramework",
             targets: ["AutomaticUpdaterFramework"]
-        ),
+        )/*,
         .executable(
             name: "Updater",
             targets: ["Updater"]
-        )
+        )*/
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -37,6 +37,14 @@ let package = Package(
             dependencies: ["AutomaticUpdaterFramework"],
             resources: [
                 .copy("UpdaterConfig.plist")
+            ]
+        ),
+        .executableTarget(
+            name: "ReleaseNotes",
+            dependencies: ["AutomaticUpdaterFramework"],
+            resources: [
+                .copy("releaseNotes.rtf"),
+                .copy("../Updater/UpdaterConfig.plist")
             ]
         )
     ]
