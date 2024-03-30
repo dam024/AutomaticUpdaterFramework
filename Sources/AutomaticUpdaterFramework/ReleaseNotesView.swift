@@ -7,6 +7,34 @@
 
 import Cocoa
 
+public class AUReleaseNotesManager {
+    private let lastOpenedAppVersionKey: String = "AUReleaseNotes_lastOpenedAppVersionKey"
+    
+    static let shared: AUReleaseNotesManager = {
+        return AUReleaseNotesManager()
+    }()
+    
+    private init() {
+        
+    }
+    
+    public func shouldPresentReleaseNotes() -> Bool {
+        if let version = UserDefaults.standard.string(forKey: self.lastOpenedAppVersionKey) {
+            let lastVersion = ProgramVersion(version: version)
+            return lastVersion < Host.currentVersion
+        } else {
+//            If it doesn't exist, it means that this is the first time the app is opened. 
+            self.saveVersion()
+        }
+        return false
+    }
+    
+    func saveVersion() {
+        UserDefaults.standard.set(Host.currentVersion.description, forKey: self.lastOpenedAppVersionKey)
+        UserDefaults.standard.synchronize()
+    }
+}
+
 public class AUReleaseNotesView: NSView {
     
     private var textView: NSScrollView
@@ -19,6 +47,9 @@ public class AUReleaseNotesView: NSView {
         self.textView = NSTextView.scrollableTextView()//scrollableDocumentContentTextView()
         self.releaseNotesURL = releasNotesURL
         super.init(frame: frameRect)
+        
+//        Save the version in order to avoid opening the release notes each time
+        AUReleaseNotesManager.shared.saveVersion()
         
 //        self.cancelButton = NSButton(image: .init(systemSymbolName: "xmark.circle.fill", accessibilityDescription: "Cross button to close the window")!, target: self, action: #selector(self.cancel(_:)))
         

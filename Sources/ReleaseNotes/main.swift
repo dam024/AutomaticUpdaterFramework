@@ -15,6 +15,7 @@ class ApplicationDelegate: NSObject, NSApplicationDelegate {
     private var window: AUReleaseNotesWindow
     
     override init() {
+        Host.configFile = URL(fileURLWithPath: "/Users/jaccouddamien/Documents/Developer/AutomaticUpdaterFramework/Sources/Updater/UpdaterConfig.plist")//This is required to have everything working...
         let url = URL(fileURLWithPath: "/Users/jaccouddamien/Documents/Developer/AutomaticUpdaterFramework/Sources/ReleaseNotes/releaseNotes.rtf")
         self.window = AUReleaseNotesWindow(url: url)
         super.init()
