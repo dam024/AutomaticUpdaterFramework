@@ -17,6 +17,7 @@ public class AUStandaloneWindow: NSWindow {
     }
     
     public func addMainView(_ view: NSView) {
+        self.isInitialized = true
         if let contentView = self.contentView {
             
             contentView.addSubview(view)
