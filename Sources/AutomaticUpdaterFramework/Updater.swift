@@ -83,12 +83,12 @@ public class Updater : Host {
             let (data, _) = try await URLSession.shared.data(for:URLRequest(url: url,cachePolicy: .reloadIgnoringLocalAndRemoteCacheData), delegate: self)
             
             // Prepare all URLs
-//            var zipFile = URL(fileURLWithPath: NSTemporaryDirectory())
-            var zipFile = try fileManager.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-            zipFile.appendPathComponent(Host.bundleIdentifer)
+            var zipFile = URL(fileURLWithPath: NSTemporaryDirectory())
+//            var zipFile = try fileManager.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+//            zipFile.appendPathComponent(Host.bundleIdentifer)
             var unzipDirectory = zipFile
-            zipFile.appendPathComponent("YoutubePlayer.zip")
-            unzipDirectory.appendPathComponent("YoutubePlayer")
+            zipFile.appendPathComponent("update.zip")
+            unzipDirectory.appendPathComponent("Update")
             
 #warning("Je pense que ça peut être bien de vider le cache avant de faire le téléchargement...")
 #warning("Faire un programme pour préparer les fichiers à update et tester le tout...")

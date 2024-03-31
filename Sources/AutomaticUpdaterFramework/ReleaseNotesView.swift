@@ -20,7 +20,7 @@ public class AUReleaseNotesManager {
     
     public func shouldPresentReleaseNotes() -> Bool {
         if let version = UserDefaults.standard.string(forKey: self.lastOpenedAppVersionKey) {
-            let lastVersion = ProgramVersion(version: version)
+            let lastVersion = try! ProgramVersion(version: version)
             return lastVersion < Host.currentVersion
         } else {
 //            If it doesn't exist, it means that this is the first time the app is opened. 

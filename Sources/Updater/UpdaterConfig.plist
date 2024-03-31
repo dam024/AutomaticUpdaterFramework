@@ -8,6 +8,8 @@
 	<string>http://localhost:8888/AppUpdater/update.php</string>
 	<key>Version</key>
 	<string>1.0</string>
+	<key>Build</key>
+	<string>1</string>
 	<key>mainAppName</key>
 	<string>Coproman</string>
 	<key>updaterName</key>

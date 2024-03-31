@@ -11,20 +11,59 @@ public struct ProgramVersion: CustomStringConvertible, Codable {
     
     public var description: String {
 //        print(self.version, self.subVersion, self.correctionNumber)
-        if correctionNumber == 0 {
-            return "\(self.version!).\(self.subVersion!)"
-        } else {
-            return "\(self.version!).\(self.subVersion!).\(self.correctionNumber!)"
+//        if correctionNumber == 0 {
+//            return "\(self.version!).\(self.subVersion!)"
+//        } else {
+//            return "\(self.version!).\(self.subVersion!).\(self.correctionNumber!)"
+//        }
+        var desc = self.version.map { int in
+            "\(int)"
+        }.joined(separator: ".")
+        if let build = self.build {
+            desc += "#\(build)"
         }
+        return desc
     }
-    public let version:Int!
-    public let subVersion:Int!
-    public let correctionNumber:Int!
     
-    init(version:String) {
-        let numbers = version.split(separator: ".")
+    public var userDescription: String {
+        var desc = self.version.map { int in
+            "\(int)"
+        }.joined(separator: ".")
+        if let build = self.build {
+            desc += " build \(build)"
+        }
+        return desc
+    }
+    
+    ///Version
+    public let version:[Int]
+    ///Build number of the version
+    public let build:Int?
+//    public let subVersion:Int!
+//    public let correctionNumber:Int!
+    
+    init(version:String) throws {
+        let numbers = version.split(separator: "#")
+        var array:[Int] = []
         
-        if let first = Int(numbers[0]), let second = Int(numbers[1]) {
+        if numbers.count > 2 || numbers.count == 0{
+            throw NSError(domain: "Invalid version string", code: 20)
+        }
+        
+        if numbers.count == 2 {
+            self.build = Int(numbers[1])
+        } else {
+            self.build = nil
+        }
+        
+        let splittedElements = numbers[0].split(separator: ".")
+        for v in splittedElements {
+            if let i = Int(v) {
+                array.append(i)
+            }
+        }
+        self.version = array
+        /*if let first = Int(numbers[0]), let second = Int(numbers[1]) {
             self.version = first
             self.subVersion = second
             if(numbers.count == 3) {
@@ -37,14 +76,13 @@ public struct ProgramVersion: CustomStringConvertible, Codable {
             self.subVersion = 0
             self.correctionNumber = 0
             print("Error converting version number")
-        }
-        
+        }*/
     }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         
-        self.init(version: try container.decode(String.self))
+        try self.init(version: try container.decode(String.self))
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -69,15 +107,17 @@ public struct ProgramVersion: CustomStringConvertible, Codable {
     }
     
     static public func > (left: ProgramVersion, right: ProgramVersion) -> Bool {
-        if(left.version == right.version) {
-            if(left.subVersion == right.subVersion) {
-                return left.correctionNumber > right.correctionNumber
-            } else {
-                return left.subVersion > right.subVersion
+        for i in 0..<min(left.version.count, right.version.count) {
+            if left.version[i] != right.version[i] {
+                return left.version[i] > right.version[i]
             }
-        } else {
-            return left.version > right.version
         }
+        if left.version.count < right.version.count {
+            return false
+        } else if left.version.count == right.version.count {
+            return (left.build ?? 0 > right.build ?? 0) || (left.build == nil && right.build == nil)
+        }
+        return true
     }
     
     static public func < (left: ProgramVersion, right: ProgramVersion) -> Bool {
@@ -119,7 +159,7 @@ public class Host : NSObject {
     
     ///Get the current version
     static let currentVersion:ProgramVersion = {
-        let infoVersion:String
+        var infoVersion:String
         if let val = Host.getConfigKey(key: "Version") {
             infoVersion = val
         } else if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
@@ -128,7 +168,13 @@ public class Host : NSObject {
     //            Please, set the key `Version` in your config file, as it could not be found in the info.plist file
             fatalError("You must set the key `Version` in the config file")
         }
-        return ProgramVersion(version: infoVersion)
+//        Add build number
+        if let val = Host.getConfigKey(key: "Build") {
+            infoVersion += "#\(val)"
+        } else if let appVersion = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
+            infoVersion += "#\(appVersion)"
+        }
+        return try! ProgramVersion(version: infoVersion)
     }()
     
     ///The bundle identifier of the application. This corresponds to the app identifier that is used on the server

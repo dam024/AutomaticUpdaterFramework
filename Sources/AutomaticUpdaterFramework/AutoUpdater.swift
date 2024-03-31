@@ -275,7 +275,7 @@ public struct UpdaterAlert : ViewModifier {
                     print("No updater...")
                 })
             }, message: {
-                Text("You are using version \(String(describing: AutoUpdater.currentVersion)). Version \(String(describing: self.autoUpdater.newVersion?.version ?? AutoUpdater.currentVersion)) is now available")
+                Text("You are using version \(String(describing: AutoUpdater.currentVersion.userDescription)). Version \(String(describing: self.autoUpdater.newVersion?.version.userDescription ?? AutoUpdater.currentVersion.userDescription)) is now available")
             })
             .alert(self.autoUpdater.feedbackString, isPresented: self.$showSecondAlert, actions: {
                 Button("Ok") {
