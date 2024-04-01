@@ -103,7 +103,7 @@ public class AUReleaseNotesWindow: AUStandaloneWindow {
     public func create() {
         let view = AUReleaseNotesView(frame: self.frame, releasNotesURL: self.releaseNotesURL)
         self.addMainView(view)
-        self.present()
+//        self.present()
     }
 }
 
