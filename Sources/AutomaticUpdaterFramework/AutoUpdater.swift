@@ -12,6 +12,11 @@ import SwiftUI
 #endif
 import AppKit
 
+/**
+ Class which determines if an update is available and post a publisher notification when an update is availble
+ 
+ This class inherits from `ObservableObject`. Thus, when an update is available, the object posts an `objectWillChange` notification to the publisher.
+ */
 public class AutoUpdater : Host {
 
     
@@ -245,7 +250,7 @@ extension AutoUpdater : ObservableObject {
 /**
  SwitfUI ViewModifier to add in the view where the update check is perform.
  
- This modifier can be added anywhere in the  view Hierarchy. It will automatically check for updates and reacts accordingly.
+ This modifier can be added anywhere in the view Hierarchy. It will automatically check for updates and reacts accordingly.
  */
 public struct UpdaterAlert : ViewModifier {
     

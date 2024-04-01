@@ -39,8 +39,6 @@ public struct ProgramVersion: CustomStringConvertible, Codable {
     public let version:[Int]
     ///Build number of the version
     public let build:Int?
-//    public let subVersion:Int!
-//    public let correctionNumber:Int!
     
     init(version:String) throws {
         let numbers = version.split(separator: "#")
@@ -63,20 +61,6 @@ public struct ProgramVersion: CustomStringConvertible, Codable {
             }
         }
         self.version = array
-        /*if let first = Int(numbers[0]), let second = Int(numbers[1]) {
-            self.version = first
-            self.subVersion = second
-            if(numbers.count == 3) {
-                self.correctionNumber = Int(numbers[2])
-            } else {
-                self.correctionNumber = 0
-            }
-        } else {
-            self.version = 0
-            self.subVersion = 0
-            self.correctionNumber = 0
-            print("Error converting version number")
-        }*/
     }
     
     public init(from decoder: Decoder) throws {

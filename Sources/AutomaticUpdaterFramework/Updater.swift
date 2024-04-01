@@ -70,7 +70,9 @@ public class Updater : Host {
         return oldVersion
     }
     
-    
+    /**
+     Download the update
+     */
     private func download(url:URL) async {
         let fileManager = FileManager()
         do {

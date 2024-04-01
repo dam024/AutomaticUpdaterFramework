@@ -7,6 +7,9 @@
 
 import Cocoa
 
+/**
+ The view presenting informations to the user about the current state of the update
+ */
 public class UpdaterView : NSView {
     
     ///Text indication for the user to let him know what the progression is
@@ -45,11 +48,13 @@ public class UpdaterView : NSView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    ///Configure the views
     private func configViews() {
         self.progressIndicator.minValue = 0
         self.progressIndicator.maxValue = 1
     }
     
+    ///Add the constraints to the different views
     private func addConstraints() {
         
 //        Progress reporter - label
@@ -75,12 +80,15 @@ public class UpdaterView : NSView {
         self.cancelButton.topAnchor.constraint(equalToSystemSpacingBelow: self.progressIndicator.bottomAnchor, multiplier: 1.0).isActive = true
     }
     
+    ///Cancel action for the corresponding `NSButton`
     @objc func cancel(_ sender: Any?) {
         Updater.shared.cancel()
     }
 }
 
 extension UpdaterView: UpdaterDelegate {
+    
+    ///Post an error to the user
     public func error(message: String) {
         DispatchQueue.main.async {
             self.progressReporter.stringValue = message
@@ -88,6 +96,7 @@ extension UpdaterView: UpdaterDelegate {
         }
     }
     
+    ///Progress of the download task
     public func progress(_ sesson: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         let conversionFactor:Int64 = 1024
         print(bytesWritten)
@@ -98,10 +107,12 @@ extension UpdaterView: UpdaterDelegate {
         }
     }
     
+    ///Download is done
     public func finishDownload() {
         print("Download done...")
     }
     
+    ///Post a state message to the user to inform him that a new step in the update has been done
     public func message(message: String, percentage: Double) {
         DispatchQueue.main.async {
             print(message, percentage)

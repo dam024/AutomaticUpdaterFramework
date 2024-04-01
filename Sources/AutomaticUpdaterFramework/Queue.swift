@@ -7,6 +7,7 @@
 
 import Foundation
 
+///Queue structure
 struct Queue<T : Any> {
     
     ///The items
@@ -40,6 +41,7 @@ struct Queue<T : Any> {
         items.append(element)
     }
     
+    ///Push an array of elements to the queue. They are put in the increasing order of the array.
     mutating func push(_ elements: [T]) {
         for element in elements {
             self.push(element)
