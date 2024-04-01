@@ -96,20 +96,11 @@ public class AUReleaseNotesWindow: AUStandaloneWindow {
         self.title = "Release notes"
         
         self.canHide = false
-        self.delegate = self
         self.level = .floating
     }
     
     public func create() {
         let view = AUReleaseNotesView(frame: self.frame, releasNotesURL: self.releaseNotesURL)
         self.addMainView(view)
-//        self.present()
-    }
-}
-
-extension AUReleaseNotesWindow : NSWindowDelegate {
-
-    public func windowDidResignKey(_ notification: Notification) {
-        (notification.object as? NSWindow)?.makeKeyAndOrderFront(self)
     }
 }
