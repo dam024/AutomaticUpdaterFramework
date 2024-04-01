@@ -97,6 +97,7 @@ public class AUReleaseNotesWindow: AUStandaloneWindow {
         
         self.canHide = false
         self.delegate = self
+        self.level = .floating
     }
     
     public func create() {
