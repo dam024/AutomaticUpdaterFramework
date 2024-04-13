@@ -31,8 +31,13 @@ final class AutomaticUpdaterFrameworkTests: XCTestCase {
         XCTAssertTrue(v[1] < v[3])
         
         for i in 0..<v.count {
-            for j in i+1..<v.count {
-                XCTAssertTrue(v[i] < v[j], "Comparing \(v[i]) < \(v[j])")
+            for j in i..<v.count {
+                if i == j {
+                    XCTAssertFalse(v[i] < v[j], "Comparing \(v[i])")
+                    XCTAssertFalse(v[i] > v[j], "Comparing \(v[i])")
+                } else {
+                    XCTAssertTrue(v[i] < v[j], "Comparing \(v[i]) < \(v[j])")
+                }
             }
         }
         

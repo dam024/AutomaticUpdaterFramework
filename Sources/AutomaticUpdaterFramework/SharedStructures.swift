@@ -64,15 +64,28 @@ public struct ProgramVersion: CustomStringConvertible, Codable {
     }
     
     public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        
-        try self.init(version: try container.decode(String.self))
+        if let container = try? decoder.singleValueContainer() {
+            try self.init(version: try container.decode(String.self))
+        } else {
+            let container = try decoder.container(keyedBy: CodingKeyProtocol.self)
+            
+            var v = try container.decode(String.self, forKey: CodingKeyProtocol.versionKey)
+            if let build = try? container.decode(Int.self, forKey: CodingKeyProtocol.buildKey) {
+                v += "#\(build)"
+            }
+            try self.init(version: v)
+        }
     }
     
     public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
+        var container = encoder.container(keyedBy: CodingKeyProtocol.self)
         
-        try container.encode(self.description)
+        try container.encode(self.version.map({ int in
+            "\(int)"
+        }).joined(separator: "."), forKey: CodingKeyProtocol.versionKey)
+        if let build = self.build {
+            try container.encode(build, forKey: CodingKeyProtocol.buildKey)
+        }
     }
     
     private struct CodingKeyProtocol: CodingKey {
@@ -88,6 +101,9 @@ public struct ProgramVersion: CustomStringConvertible, Codable {
             self.intValue = intValue
             self.stringValue = "\(intValue)"
         }
+        
+        static let versionKey = CodingKeyProtocol(stringValue: "version")!
+        static let buildKey = CodingKeyProtocol(stringValue: "build")!
     }
     
     static public func > (left: ProgramVersion, right: ProgramVersion) -> Bool {
@@ -99,7 +115,10 @@ public struct ProgramVersion: CustomStringConvertible, Codable {
         if left.version.count < right.version.count {
             return false
         } else if left.version.count == right.version.count {
-            return (left.build ?? 0 > right.build ?? 0) || (left.build == nil && right.build == nil)
+            if left.build == nil && right.build == nil {
+                return false
+            }
+            return (left.build ?? 0 > right.build ?? 0)
         }
         return true
     }
@@ -152,13 +171,18 @@ public class Host : NSObject {
     //            Please, set the key `Version` in your config file, as it could not be found in the info.plist file
             fatalError("You must set the key `Version` in the config file")
         }
-//        Add build number
-        if let val = Host.getConfigKey(key: "Build") {
-            infoVersion += "#\(val)"
-        } else if let appVersion = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
-            infoVersion += "#\(appVersion)"
-        }
+
         return try! ProgramVersion(version: infoVersion)
+    }()
+    
+    static let currentBuild:Int? = {
+//        Add build number
+        if let val = Int(Host.getConfigKey(key: "Build") ?? "") {
+            return val
+        } else if let appVersion = Bundle.main.infoDictionary?["CFBundleVersion"] as? Int {
+            return appVersion
+        }
+        return nil
     }()
     
     ///The bundle identifier of the application. This corresponds to the app identifier that is used on the server

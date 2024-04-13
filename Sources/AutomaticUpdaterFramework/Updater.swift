@@ -76,10 +76,6 @@ public class Updater : Host {
     private func download(url:URL) async {
         let fileManager = FileManager()
         do {
-            
-            //                    On récupère le lien de la main app
-            let oldVersion:URL = self.getOldVersionURL()
-            
             self.delegate?.message(message: "Downloading new version...", percentage: 2.0/6.0)
             //   Download the data
             let (data, _) = try await URLSession.shared.data(for:URLRequest(url: url,cachePolicy: .reloadIgnoringLocalAndRemoteCacheData), delegate: self)

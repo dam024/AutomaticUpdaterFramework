@@ -67,7 +67,10 @@ public class AutoUpdater : Host {
      */
     private func askHostForAnUpdate() async {
         print("récupération des versions")
-        let post = "isUpdate=true&app=\(Host.bundleIdentifer)&currentVersion=\(Host.currentVersion)&getLatest=true"
+        var post = "isUpdate=true&app=\(Host.bundleIdentifer)&currentVersion=\(Host.currentVersion)&getLatest=true"
+        if let build = Host.currentBuild {
+            post += "&currentBuild=\(build)"
+        }
         guard let url = URL(string: Host.link) else {
             print("Invalid url")
             return
@@ -78,7 +81,7 @@ public class AutoUpdater : Host {
         
         
         do {
-            let (data, _ ) = try await URLSession.shared.data(for: requete)
+            let (data, _ ) = try await URLSession(configuration: .ephemeral).data(for: requete)
             do {
                 let response = try JSONDecoder().decode(UpdateResult.self, from: data)
 //                                        print(response)
