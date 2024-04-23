@@ -154,7 +154,7 @@ struct VersionDescription: Codable, Equatable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
         let version = try container.decode(String.self, forKey: .version)
-        let build = try container.decode(Int?.self, forKey: .build)
+        let build = try container.decode(String?.self, forKey: .build)
         let url = try container.decode(URL.self, forKey: .url)
         let bundleIdentifier = try container.decode(String.self, forKey: .bundleIdentifier)
         
@@ -168,7 +168,8 @@ struct VersionDescription: Codable, Equatable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         
         try container.encode(self.version.version.map{ String($0) }.joined(separator:"."), forKey: .version)
-        try container.encode(self.version.build, forKey: .build)
+        let build = (self.version.build != nil) ? "\(self.version.build!)" : nil
+        try container.encode(build, forKey: .build)
         try container.encode(self.url, forKey: .url)
         try container.encode(self.bundleIdentifier, forKey: .bundleIdentifier)
     }
