@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct ProgramVersion: CustomStringConvertible, Codable {
+public struct ProgramVersion: CustomStringConvertible, Codable, Equatable {
     
     public var description: String {
 //        print(self.version, self.subVersion, self.correctionNumber)
@@ -129,20 +129,67 @@ public struct ProgramVersion: CustomStringConvertible, Codable {
     
 }
 
-struct UpdateResult : Codable {
+struct UpdateResult : Codable, Equatable {
     let error:ServerError?
     let recommanded: VersionDescription?
     let alternative: VersionDescription?
 }
-struct ServerError : Codable {
+struct ServerError : Codable, Equatable {
     let message: String
     let code:Int
     let userInfo: [String]?
 }
-struct VersionDescription: Codable {
+struct VersionDescription: Codable, Equatable {
     let version: ProgramVersion
     let url: URL
     let bundleIdentifier: String
+    
+    init(version: ProgramVersion, url: URL, bundleIdentifier: String) {
+        self.bundleIdentifier = bundleIdentifier
+        self.url = url
+        self.version = version
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        let version = try container.decode(String.self, forKey: .version)
+        let build = try container.decode(Int?.self, forKey: .build)
+        let url = try container.decode(URL.self, forKey: .url)
+        let bundleIdentifier = try container.decode(String.self, forKey: .bundleIdentifier)
+        
+        let versionString = (build != nil) ? "\(version)#\(build!)" : version
+        let programVersion = try ProgramVersion(version: versionString)
+        
+        self.init(version: programVersion, url: url, bundleIdentifier: bundleIdentifier)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(self.version.version.map{ String($0) }.joined(separator:"."), forKey: .version)
+        try container.encode(self.version.build, forKey: .build)
+        try container.encode(self.url, forKey: .url)
+        try container.encode(self.bundleIdentifier, forKey: .bundleIdentifier)
+    }
+    
+    private struct CodingKeys: CodingKey {
+        var stringValue: String
+        
+        init?(stringValue: String) {
+            self.stringValue = stringValue
+        }
+        
+        var intValue: Int?
+        
+        init?(intValue: Int) {
+            return nil
+        }
+        static let version: CodingKeys = .init(stringValue: "version")!
+        static let build: CodingKeys = .init(stringValue: "build")!
+        static let url: CodingKeys = .init(stringValue: "url")!
+        static let bundleIdentifier: CodingKeys = .init(stringValue: "bundleIdentifier")!
+    }
 }
 
 public class Host : NSObject {

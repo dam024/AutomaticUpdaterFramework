@@ -48,4 +48,21 @@ final class AutomaticUpdaterFrameworkTests: XCTestCase {
             }
         }
     }
+    
+//    Test Decode
+    func testDecode() throws {
+        let json = "{\"error\":null,\"recommanded\": {\"version\":\"1.2\",\"build\":4,\"url\":\"https://damienjaccoud.com/AppUpdater/Apps/com.codex.Coproman/YoutubePlayer.zip\",\"bundleIdentifier\":\"com.codex.Coproman\"},\"alternative\":null}"
+        
+        let expectedRecommanded = VersionDescription(version: try ProgramVersion(version: "1.2#4"), url: URL(string: "https://damienjaccoud.com/AppUpdater/Apps/com.codex.Coproman/YoutubePlayer.zip")!, bundleIdentifier: "com.codex.Coproman")
+        let expected = UpdateResult(error: nil, recommanded: expectedRecommanded, alternative: nil)
+        
+//        Test encoding
+        let encoded = try JSONEncoder().encode(expected)
+        
+        let data = try JSONDecoder().decode(UpdateResult.self, from: json.data(using: .utf8)!)
+        
+        XCTAssertEqual(data, expected)
+        XCTAssertEqual(try JSONDecoder().decode(UpdateResult.self, from: encoded), data)
+    }
 }
+
