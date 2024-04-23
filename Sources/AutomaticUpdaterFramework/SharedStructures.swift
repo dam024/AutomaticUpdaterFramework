@@ -219,6 +219,10 @@ public class Host : NSObject {
     //            Please, set the key `Version` in your config file, as it could not be found in the info.plist file
             fatalError("You must set the key `Version` in the config file")
         }
+        
+        if let currentBuild = Host.currentBuild {
+            infoVersion += "#\(currentBuild)"
+        }
 
         return try! ProgramVersion(version: infoVersion)
     }()
