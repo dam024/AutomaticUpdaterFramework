@@ -231,7 +231,7 @@ public class Host : NSObject {
 //        Add build number
         if let val = Int(Host.getConfigKey(key: "Build") ?? "") {
             return val
-        } else if let appVersion = Bundle.main.infoDictionary?["CFBundleVersion"] as? Int {
+        } else if let appVersion = Int(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "") {
             return appVersion
         }
         return nil
